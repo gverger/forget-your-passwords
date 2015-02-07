@@ -3,7 +3,10 @@
 $(document).ready(function() {
   $('#genPassword').click(function() {
     $(this).selectText();
-  })
+  });
+  $(':text, :password').focus(function() {
+    this.select();
+  });
 });
 
 jQuery.fn.selectText = function(){
