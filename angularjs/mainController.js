@@ -34,7 +34,7 @@ module.controller('mainController', function($scope) {
     $scope.passwordToGenerate();
   });
   //$scope.$watch(function() { return angular.toJson($scope.profiles); }, function(old,value) { saveProfiles(value) alertify.log("Save"); },true);
-  $scope.$watchCollection(function() { return angular.toJson($scope.profiles);}, function(old,value) { if (old !== value) {saveProfiles(value); 
+  $scope.$watchCollection(function() { return angular.toJson($scope.profiles);}, function(value, old) { if (old !== value) {saveProfiles(value);
    //                         alertify.log(old);alertify.log(value);
   } });
   $scope.passwordToGenerate = function() {
@@ -49,12 +49,13 @@ module.controller('accountsController', function($scope, $filter){
   $scope.$watch('profiles[selectedProfile].accounts', function(value) {
     $scope.accounts = value;
   });
+  $scope.showElement = {};
   $scope.hover = function(el) {
-    if (el.showDelete) {
-      el.showDelete= !el.showDelete;
+    if ($scope.showElement[el]) {
+      $scope.showElement[el]  = !$scope.showElement[el];
     }
     else {
-      el.showDelete = true;
+      $scope.showElement[el] = true;
     }
   }
   $scope.addAccount = function() {
