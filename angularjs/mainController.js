@@ -52,6 +52,8 @@ function mainController($scope, profilesManager, currentState) {
                         }
                         if (mv.profiles.length > 0) {
                             currentState.setProfileId(mv.profiles[idx].id);
+                        } else {
+                            currentState.noProfileId();
                         }
                     });
                 }
@@ -112,12 +114,16 @@ function profileController($scope,  profilesManager,passwordProvider, currentSta
 
     $scope.$watch('currentState.getProfileId()', function(value, oldValue) {
             mv.profile = profilesManager.getProfile(value);
-            alertify.log("Profile : " + mv.profile.id);
-            mv.mainPassword = mv.profile.$$password;
+            if (mv.profile) {
+                mv.mainPassword = mv.profile.$$password;
+            }
     });
 
     $scope.$watch( function() { 
-        return mv.profile.$$password;
+        if (mv.profile) {
+            return mv.profile.$$password;
+        }
+        return null;
     },
     function onPasswordChanged(value, oldValue) {
         if (value !== oldValue) {
@@ -129,9 +135,14 @@ function profileController($scope,  profilesManager,passwordProvider, currentSta
     });
 
     mv.generatePassword = function() {
+        if (mv.profile) {
         mv.genPassword = passwordProvider.generatePassword(
             mv.profile.$$password,
             mv.profile.accounts[currentState.getAccountId()]);
+        } else {
+            mv.genPassword = "";
+        }
+            
     };
     $scope.$on('password:to-update', mv.generatePassword);
 
@@ -142,7 +153,9 @@ module.controller('accountsController', function($scope, $filter, profilesManage
     mv.accounts = profilesManager.getProfile(currentState.getProfileId()).accounts;
 
     $scope.$watch('currentState.getProfileId()', function(value) {
-        mv.accounts = profilesManager.getProfile(value).accounts;
+        if (profilesManager.getProfile(value)) {
+            mv.accounts = profilesManager.getProfile(value).accounts;
+        }
     });
 
     mv.selectAccount = function(idx) {
@@ -153,19 +166,14 @@ module.controller('accountsController', function($scope, $filter, profilesManage
         mv.selectAccount(mv.accounts.length-1);
         $('#accountname').select();
     };
-    mv.deleteAccount = function(ac, $index) {
-        for (var idx = 0, len = mv.accounts.length; idx < len; idx++) {
-            var ac_idx = mv.accounts[idx];
-            if (ac_idx.name == ac.name && ac_idx.user == ac.user) {
-                alertify.log("Removing " + ac.name);
-                mv.accounts.splice(idx,1);
-                if ($index == mv.accounts.length) {
-                    $index = $index - 1;
-                }
-                mv.selectAccount($index);
-                return ;
-            }
+    mv.deleteAccount = function(ac) {
+        var idx = mv.accounts.indexOf(ac);
+        mv.accounts.splice(idx,1);
+        var selIdx = currentState.getAccountId();
+        if (selIdx == mv.accounts.length) {
+            selIdx = selIdx - 1;
         }
+        mv.selectAccount(selIdx);
     };
 });
 
@@ -175,10 +183,16 @@ function currentAccountController($rootScope, $scope, profilesManager, currentSt
 
     $scope.currentState = currentState;
     var mv = this;
-    mv.account = profilesManager.getProfile(currentState.getProfileId()).accounts[currentState.getAccountId()];
+        var profile = profilesManager.getProfile(currentState.getProfileId());
+        if (profile) {
+            mv.account = profile.accounts[currentState.getAccountId()];
+        }
 
     $scope.$on('state:account:updated', function(event) {
-        mv.account = profilesManager.getProfile(currentState.getProfileId()).accounts[currentState.getAccountId()];
+        var profile = profilesManager.getProfile(currentState.getProfileId());
+        if (profile) {
+            mv.account = profile.accounts[currentState.getAccountId()];
+        }
     });
     $scope.$watch(function() {
         if (mv.account) {

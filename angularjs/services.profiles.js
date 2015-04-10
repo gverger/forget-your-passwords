@@ -82,10 +82,6 @@
             return profile.$$password;
         }
 
-        var addProfile = function(profile) {
-            profiles.push(profile);
-        };
-
         function deleteProfile(profile) {
             for ( var idx = 0; idx < profiles.length; idx++ ) {
                 if ( profile.id === profiles[idx].id ) {
@@ -96,17 +92,9 @@
             return null;
         }
 
-        var name = function(newName) {
-            profile.name = newName;
-        };
-
         function newAccount(profile) {
             profile.push(angular.copy(emptyAccount));
         }
-
-        var addAccount = function(profile, account) {
-            profile.accounts.push(account);
-        };
 
     }
 

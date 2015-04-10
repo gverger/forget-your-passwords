@@ -7,6 +7,7 @@
 
         var service = {
             setProfileId: setProfileId,
+            noProfileId: noProfileId,
             getProfileId: getProfileId,
             setAccountId: setAccountId,
             getAccountId: getAccountId
@@ -32,6 +33,14 @@
             //}
         }
         
+        function noProfileId() {
+                profileId = -1;
+                accountId = -1;
+                $rootScope.$broadcast('state:profile:updated');
+                $rootScope.$broadcast('state:account:updated');
+            //}
+        }
+
         function setProfileId(id) {
             //if (id !== profileId) {
                 accountIds[profileId] = accountId;
