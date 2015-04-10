@@ -1,3 +1,3 @@
 (function() {
-    angular.module('password', []); 
+    angular.module('password', ['charsets']); 
 })();

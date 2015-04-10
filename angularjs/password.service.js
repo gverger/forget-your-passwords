@@ -1,9 +1,20 @@
 (function() {
+    angular.
+        module('password').
+        factory('passwordProvider', passwordProvider);
 
-    angular.module('password')
-        .factory('passwordProvider', passwordProvider);
+    passwordProvider.$inject = ['charsetsProvider'];
 
-    function passwordProvider () {
+    function passwordProvider (charsetsProvider) {
+        /*var charsets={
+            'base93': "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`~!@#$%^&*()_-+={}|[]\\:\";\'<>?,./",
+            'base62': "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+            'base16': "0123456789abcdef",
+            'letters': "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+            'numbers': "0123456789"
+        };*/
+
+
         return {
             generatePassword: generatePassword,
             encrypt: encrypt
@@ -24,7 +35,7 @@
                 }
                 password += encrypt(
                         account.alg, key, data, account.length,
-                        charsets[account.charset], account.prefix, account.suffix
+                        charsetsProvider.get(account.charset).chars, account.prefix, account.suffix
                         );
 
                 count++;
@@ -32,11 +43,10 @@
             if (account.prefix)
                 password = account.prefix + password;
             if (account.suffix)
-                password = password.substring(0, account.length - account.suffix.length)
-                    + account.suffix;
+                password = password.substring(0, account.length - account.suffix.length) + account.suffix;
             password = password.substring(0, account.length);
             return password;
-        };
+        }
 
         function encrypt(
                 hashAlgorithm, key, data, passwordLength, charset, prefix, suffix

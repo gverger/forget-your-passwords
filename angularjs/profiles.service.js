@@ -23,6 +23,16 @@
     function profilesManager() {
 
         var profiles = angular.fromJson(window.localStorage.getItem("profiles"));
+        var service = {
+            profiles: profiles,
+            password: password,
+            newProfile: newProfile,
+            getProfile: getProfile,
+            getProfileFromIdx: getProfileFromIdx,
+            deleteProfile: deleteProfile,
+            newAccount: newAccount
+        };
+
 
         // Test des identifiants
         // Coherence avec versions precedentes
@@ -47,15 +57,7 @@
             newProfile();
         }
 
-        return {
-            profiles: profiles,
-            password: password,
-            newProfile: newProfile,
-            getProfile: getProfile,
-            getProfileFromIdx: getProfileFromIdx,
-            deleteProfile: deleteProfile,
-            newAccount: newAccount
-        };
+        return service;
 
         function newProfile() {
             var newP = angular.copy(emptyProfile);
@@ -93,7 +95,9 @@
         }
 
         function newAccount(profile) {
-            profile.push(angular.copy(emptyAccount));
+            var account = angular.copy(emptyAccount);
+            profile.accounts.push(account);
+            return account;
         }
 
     }
