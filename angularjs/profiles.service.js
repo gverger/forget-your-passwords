@@ -27,6 +27,7 @@
             profiles: profiles,
             password: password,
             newProfile: newProfile,
+            addProfile: addProfile,
             getProfile: getProfile,
             getProfileFromIdx: getProfileFromIdx,
             deleteProfile: deleteProfile,
@@ -65,6 +66,13 @@
             nextId ++;
             profiles.push(newP);
             return newP;
+        }
+
+        function addProfile(p) {
+            p.id = nextId;
+            nextId ++;
+            profiles.push(p);
+            return p;
         }
 
         function getProfile(profileId) {
