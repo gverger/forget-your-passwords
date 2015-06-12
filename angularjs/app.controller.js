@@ -73,13 +73,47 @@
             var reader = new FileReader();
             reader.onload = function(theFile) {
                 $scope.$apply(function() {
-                    var oldProfile = vm.profiles;
-                    vm.profiles = angular.fromJson(reader.result);
+                    mergeProfiles(vm.profiles, angular.fromJson(reader.result));
+                    //var oldProfile = vm.profiles;
+                    //vm.profiles = angular.fromJson(reader.result);
+                    //vm.profiles = newProfiles;
                     vm.selectProfile(vm.profiles[0]);
                 });
             };
             reader.readAsText(file);
         };
+
+        function mergeProfiles(p1, p2) {
+            for (var i = 0; i < p2.length; i++) {
+                var p = p2[i];
+                var already_there = false;
+                for (var j = 0; j < p1.length; j++) {
+                    if (p1[j].name == p.name) {
+                        for (var acIdx = 0; acIdx < p.accounts.length; acIdx++) {
+                            addToProfile(p.accounts[acIdx], p1[j]);
+                        };
+                        already_there = true;
+                        continue;
+                    }
+                };
+                if (!already_there) {
+                    profilesManager.addProfile(p2[i]);
+                }
+            };
+        };
+
+        function addToProfile(ac, p) {
+            for (var i = 0; i < p.accounts.length; i++) {
+                var pAc = p.accounts[i];
+                if (pAc.name == ac.name && pAc.user == ac.user) {
+                    alertify.log(ac.name + "(" + ac.user + ") already present");
+                    return ;
+                }
+            };
+            // Attention, pas de copie de ac !
+            p.accounts.push(ac);
+        }
+
         vm.exportProfiles = function() {
             var a = window.document.createElement('a');
             a.href = window.URL.createObjectURL( new Blob([angular.toJson(vm.profiles)], {type: 'text/plain;charset=utf-8;'}));
@@ -222,7 +256,7 @@
         if (!checkLocalStorageSupport()) {
             alertify.error('No storage for this browser');
         }
-        alertify.log("Save" + profiles);
-        //window.localStorage.setItem('profiles',profiles);
+        //alertify.log("Save" + profiles);
+        window.localStorage.setItem('profiles',profiles);
     }
 })();
