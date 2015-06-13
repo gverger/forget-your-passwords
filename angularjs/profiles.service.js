@@ -27,9 +27,9 @@
             profiles: profiles,
             password: password,
             newProfile: newProfile,
-            addProfile: addProfile,
             getProfile: getProfile,
             getProfileFromIdx: getProfileFromIdx,
+            mergeWithProfiles: mergeWithProfiles,
             deleteProfile: deleteProfile,
             newAccount: newAccount
         };
@@ -107,6 +107,38 @@
             profile.accounts.push(account);
             return account;
         }
+
+         function mergeWithProfiles(listofprofiles) {
+            for (var i = 0; i < listofprofiles.length; i++) {
+                var p = listofprofiles[i];
+                var already_there = false;
+                for (var j = 0; j < profiles.length; j++) {
+                    if (profiles[j].name == p.name) {
+                        for (var acIdx = 0; acIdx < p.accounts.length; acIdx++) {
+                            addToProfile(p.accounts[acIdx], profiles[j]);
+                        };
+                        already_there = true;
+                        continue;
+                    }
+                };
+                if (!already_there) {
+                    addProfile(p);
+                }
+            };
+        };
+
+        function addToProfile(ac, p) {
+            for (var i = 0; i < p.accounts.length; i++) {
+                var pAc = p.accounts[i];
+                if (pAc.name == ac.name && pAc.user == ac.user) {
+                    //alertify.log(ac.name + "(" + ac.user + ") already present");
+                    return ;
+                }
+            };
+            // Attention, pas de copie de ac !
+            p.accounts.push(ac);
+        }
+
 
     }
 
