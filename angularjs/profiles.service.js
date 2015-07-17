@@ -23,6 +23,11 @@
     function profilesManager() {
 
         var profiles = angular.fromJson(window.localStorage.getItem("profiles"));
+        if (profiles === null) {
+            profiles = [];
+            newProfile();
+        }
+
         var service = {
             profiles: profiles,
             password: password,
@@ -53,10 +58,6 @@
             }
         }
 
-        if (profiles === null) {
-            profiles = [];
-            newProfile();
-        }
 
         return service;
 
