@@ -97,8 +97,9 @@
             // Remove anchor from body
             document.body.removeChild(a);
         };
-
-        vm.selectProfile(vm.profiles[0]);
+        if (vm.profiles[0]) {
+            vm.selectProfile(vm.profiles[0]);
+        };
     }
 
     function profileController($scope,  profilesManager,passwordProvider, currentState) {
